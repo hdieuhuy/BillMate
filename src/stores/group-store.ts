@@ -13,6 +13,8 @@ export interface GroupState {
   members: string[];
   expenses: Expense[];
   bankInfo: BankInfo;
+  isFundMode: boolean;
+  fundAmount: number;
 }
 
 interface GroupStoreActions {
@@ -23,6 +25,8 @@ interface GroupStoreActions {
   addExpense: (expense: Omit<Expense, 'id' | 'createdAt'>) => void;
   deleteExpense: (id: string) => void;
   updateBankInfo: (bankInfo: Partial<BankInfo>) => void;
+  setFundMode: (enabled: boolean) => void;
+  setFundAmount: (amount: number) => void;
   resetGroup: () => void;
 }
 
@@ -38,6 +42,8 @@ const DEFAULT_STATE: GroupState = {
     accountNo: '',
     accountName: '',
   },
+  isFundMode: false,
+  fundAmount: 0,
 };
 
 // UTF-8 safe base64 serialization
@@ -49,6 +55,8 @@ export function serializeState(state: GroupState): string {
       members: state.members,
       expenses: state.expenses,
       bankInfo: state.bankInfo,
+      isFundMode: state.isFundMode,
+      fundAmount: state.fundAmount,
     };
     const jsonStr = JSON.stringify(data);
     const utf8Str = encodeURIComponent(jsonStr);
@@ -145,6 +153,16 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
     const updatedBank = { ...get().bankInfo, ...info };
     set({ bankInfo: updatedBank });
     saveAndSync({ ...get(), bankInfo: updatedBank });
+  },
+
+  setFundMode: (enabled) => {
+    set({ isFundMode: enabled });
+    saveAndSync({ ...get(), isFundMode: enabled });
+  },
+
+  setFundAmount: (amount) => {
+    set({ fundAmount: amount });
+    saveAndSync({ ...get(), fundAmount: amount });
   },
 
   resetGroup: () => {

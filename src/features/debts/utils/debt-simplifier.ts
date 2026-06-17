@@ -6,6 +6,7 @@ export interface Expense {
   participants: string[];
   splitType: 'equal' | 'exact';
   customAmounts?: Record<string, number>; // maps member name to amount they owe
+  categoryId?: string; // category tag
   createdAt: number;
 }
 
