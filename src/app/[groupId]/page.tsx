@@ -1129,8 +1129,7 @@ export default function GroupDashboard() {
           <ScrollArea className="flex-1 min-h-0">
             <div className="p-4 space-y-4">
               
-              {activeResultTab === 'settle' ? (
-                <>
+              <div className={activeResultTab === 'settle' ? 'block space-y-4' : 'hidden'}>
                   {isFundMode && (
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 space-y-3">
                       <div className="flex items-center justify-between">
@@ -1277,9 +1276,8 @@ export default function GroupDashboard() {
                       </div>
                     )}
                   </div>
-                </>
-              ) : (
-                <>
+              </div>
+              <div className={activeResultTab === 'report' ? 'block space-y-4' : 'hidden'}>
                   {/* Category Donut Chart */}
                   {expensesByCategory.length > 0 && (
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 space-y-3">
@@ -1295,9 +1293,23 @@ export default function GroupDashboard() {
                               nameKey="label"
                               cx="50%"
                               cy="50%"
-                              innerRadius={55}
-                              outerRadius={75}
+                              innerRadius={45}
+                              outerRadius={80}
                               paddingAngle={3}
+                              labelLine={false}
+                              label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                                const RADIAN = Math.PI / 180;
+                                const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                                const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                                const percent = Math.round((value / totalSpending) * 100);
+                                if (percent < 5) return null;
+                                return (
+                                  <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize={11} fontWeight="bold">
+                                    {`${percent}%`}
+                                  </text>
+                                );
+                              }}
                             >
                               {expensesByCategory.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={entry.color} />
@@ -1396,8 +1408,7 @@ export default function GroupDashboard() {
                       </div>
                     )}
                   </div>
-                </>
-              )}
+              </div>
 
             </div>
           </ScrollArea>
@@ -1528,7 +1539,7 @@ export default function GroupDashboard() {
           <div className="px-5 py-4 overflow-auto flex-1 min-h-0 bg-slate-50/50 dark:bg-slate-900">
             <div
               id="share-card"
-              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col min-w-[500px]"
+              className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm flex flex-col min-w-[500px] overflow-hidden"
             >
               <div className="flex flex-col sm:flex-row flex-1">
                 {/* Left Column: Summary & Balances */}
