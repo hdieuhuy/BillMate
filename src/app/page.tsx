@@ -28,7 +28,7 @@ export default function Home() {
     if (!cleanName) return;
 
     // Generate unique group ID
-    const groupId = 'group_' + Math.random().toString(36).substring(2, 11);
+    const groupId = 'bm-' + Math.random().toString(36).substring(2, 11);
 
     // Initial group state
     const initialState = {
@@ -41,6 +41,8 @@ export default function Home() {
         accountNo: '',
         accountName: '',
       },
+      isFundMode: false,
+      fundAmount: 0,
     };
 
     // Serialize state to base64 hash and redirect

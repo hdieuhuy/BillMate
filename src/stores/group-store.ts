@@ -87,13 +87,15 @@ export const useGroupStore = create<GroupStore>((set, get) => ({
 
   initGroup: (name, members) => {
     const cleanMembers = Array.from(new Set(members.map(m => m.trim()).filter(Boolean)));
-    const groupId = 'group_' + Math.random().toString(36).substring(2, 11);
+    const groupId = 'bm-' + Math.random().toString(36).substring(2, 11);
     const newState: GroupState = {
       groupId,
       groupName: name.trim(),
       members: cleanMembers,
       expenses: [],
       bankInfo: { bankId: '', accountNo: '', accountName: '' },
+      isFundMode: false,
+      fundAmount: 0,
     };
 
     set(newState);

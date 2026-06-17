@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, notFound } from 'next/navigation';
 import { 
   useGroupStore, 
   deserializeState, 
@@ -107,6 +107,10 @@ export default function GroupDashboard() {
   const params = useParams();
   const router = useRouter();
   const groupId = params.groupId as string;
+
+  if (groupId && !groupId.startsWith('bm-')) {
+    notFound();
+  }
 
   // Zustand stores
   const {
@@ -1297,7 +1301,7 @@ export default function GroupDashboard() {
                               outerRadius={80}
                               paddingAngle={3}
                               labelLine={false}
-                              label={({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
+                              label={({ cx, cy, midAngle, innerRadius, outerRadius, value }: any) => {
                                 const RADIAN = Math.PI / 180;
                                 const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
                                 const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -1316,7 +1320,7 @@ export default function GroupDashboard() {
                               ))}
                             </Pie>
                             <Tooltip 
-                              formatter={(value: number) => [`${value.toLocaleString('vi-VN')} ₫`, 'Tổng']}
+                              formatter={(value: any) => [`${Number(value).toLocaleString('vi-VN')} ₫`, 'Tổng']}
                               contentStyle={{ borderRadius: '12px', fontSize: '12px', border: '1px solid #f1f5f9', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.1)' }}
                               itemStyle={{ color: '#0f172a', fontWeight: 'bold' }}
                             />
