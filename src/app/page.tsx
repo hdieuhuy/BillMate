@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Wallet, 
-  ArrowRight, 
-  Sparkles, 
-  Zap, 
-  Share2, 
-  CheckCircle2, 
-  Users, 
-  ShieldCheck 
+import {
+  Wallet,
+  ArrowRight,
+  Sparkles,
+  Zap,
+  Share2,
+  CheckCircle2,
+  Users,
+  ShieldCheck
 } from 'lucide-react';
 import { serializeState } from '@/stores/group-store';
 import { motion } from 'framer-motion';
@@ -78,16 +78,16 @@ export default function Home() {
       {/* 1. Header */}
       <header className="w-full max-w-7xl mx-auto px-6 h-20 flex items-center justify-between z-10 relative">
         <div className="flex items-center gap-2.5">
-          <img 
-            src="/logo.png" 
-            alt="BillMate Logo" 
-            className="w-9 h-9 rounded-xl shadow-md shadow-emerald-500/20 object-cover" 
+          <img
+            src="/logo.png"
+            alt="BillMate Logo"
+            className="w-9 h-9 rounded-xl shadow-md shadow-emerald-500/20 object-cover"
           />
           <span className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-50">
             BillMate
           </span>
         </div>
-        
+
         <div className="flex items-center gap-4">
           <span className="hidden md:inline text-xs text-slate-400 dark:text-slate-500 font-semibold tracking-wider uppercase">
             ⚡️ Phiên bản MVP miễn phí
@@ -99,13 +99,13 @@ export default function Home() {
       {/* 2. Hero Section */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center py-8 lg:py-16 z-10 relative">
         {/* Left column: Headings and Features summary */}
-        <motion.div 
+        <motion.div
           className="lg:col-span-7 space-y-6 text-center lg:text-left"
           initial="hidden"
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold"
           >
@@ -113,7 +113,7 @@ export default function Home() {
             <span>Tối giản hóa tài chính nhóm</span>
           </motion.div>
 
-          <motion.h2 
+          <motion.h2
             variants={fadeInUp}
             className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-slate-50 tracking-tight leading-tight"
           >
@@ -123,7 +123,7 @@ export default function Home() {
             </span>
           </motion.h2>
 
-          <motion.p 
+          <motion.p
             variants={fadeInUp}
             className="text-slate-500 dark:text-slate-400 dark:text-slate-500 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed"
           >
@@ -131,7 +131,7 @@ export default function Home() {
           </motion.p>
 
           {/* Quick Feature Bullet list */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
             className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto lg:mx-0 pt-2 text-left"
           >
@@ -155,7 +155,7 @@ export default function Home() {
         </motion.div>
 
         {/* Right column: Action Glassmorphic Card */}
-        <motion.div 
+        <motion.div
           className="lg:col-span-5 w-full max-w-md mx-auto"
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -283,7 +283,7 @@ export default function Home() {
               BillMate
             </span>
           </div>
-          
+
           <p className="text-xs text-slate-500 dark:text-slate-400 dark:text-slate-500">
             © 2026 BillMate. Thiết kế tối giản cho trải nghiệm tài chính nhóm mượt mà.
           </p>
