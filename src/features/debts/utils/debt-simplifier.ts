@@ -38,7 +38,7 @@ export function calculateBalances(expenses: Expense[], members: string[]): Recor
 
     // Subtract owed amounts from participants
     if (splitType === 'equal') {
-      const share = amount / (participants.length || 1);
+      const share = Math.round(amount / (participants.length || 1));
       for (const p of participants) {
         if (balances[p] === undefined) {
           balances[p] = 0;
@@ -56,7 +56,7 @@ export function calculateBalances(expenses: Expense[], members: string[]): Recor
         }
       } else {
         // Fallback to equal split if customAmounts is missing
-        const share = amount / (participants.length || 1);
+        const share = Math.round(amount / (participants.length || 1));
         for (const p of participants) {
           if (balances[p] === undefined) {
             balances[p] = 0;

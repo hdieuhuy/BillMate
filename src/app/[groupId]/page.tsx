@@ -143,6 +143,7 @@ export default function GroupDashboard() {
 
   // Tabs for Results Column (Settle vs Report)
   const [activeResultTab, setActiveResultTab] = useState<'settle' | 'report'>('settle');
+  const [useFundToOffset, setUseFundToOffset] = useState(true);
 
   // Inline Form State
   const [expDesc, setExpDesc] = useState('');
@@ -277,7 +278,6 @@ export default function GroupDashboard() {
 
   // Derived financial computations for Personal
   const personalBalances = calculateBalances(personalExpenses, members);
-  const simplifiedDebts = simplifyDebts(personalBalances);
 
   // Fund computations
   const totalFund = isFundMode ? members.length * fundAmount : 0;
@@ -290,7 +290,7 @@ export default function GroupDashboard() {
   
   fundExpenses.forEach(exp => {
     if (exp.splitType === 'equal') {
-      const share = exp.amount / (exp.participants.length || 1);
+      const share = Math.round(exp.amount / (exp.participants.length || 1));
       exp.participants.forEach(p => {
         if (fundConsumption[p] !== undefined) fundConsumption[p] += share;
       });
@@ -300,7 +300,7 @@ export default function GroupDashboard() {
           if (fundConsumption[p] !== undefined) fundConsumption[p] += exp.customAmounts![p] || 0;
         });
       } else {
-        const share = exp.amount / (exp.participants.length || 1);
+        const share = Math.round(exp.amount / (exp.participants.length || 1));
         exp.participants.forEach(p => {
           if (fundConsumption[p] !== undefined) fundConsumption[p] += share;
         });
@@ -318,6 +318,15 @@ export default function GroupDashboard() {
   members.forEach(m => {
     balances[m] = (personalBalances[m] || 0) + (fundBalances[m] || 0);
   });
+
+  const settlementBalances = { ...personalBalances };
+  if (isFundMode && remainingFund > 0 && useFundToOffset) {
+    Object.keys(balances).forEach(m => {
+      settlementBalances[m] = balances[m];
+    });
+    settlementBalances['FUND'] = -remainingFund;
+  }
+  const simplifiedDebts = simplifyDebts(settlementBalances);
 
   // Total Spending & stats calculations
   const totalSpending = expenses.reduce((sum, exp) => sum + exp.amount, 0);
@@ -1192,7 +1201,7 @@ export default function GroupDashboard() {
                   </div>
 
                   {/* 2. Fund Settlements */}
-                  {isFundMode && members.some(m => Math.abs(fundBalances[m]) >= 1) && (
+                  {isFundMode && (!useFundToOffset || remainingFund <= 0) && members.some(m => Math.abs(fundBalances[m]) >= 1) && (
                     <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 space-y-4">
                       {/* Cần thu thêm */}
                       {members.filter(m => fundBalances[m] <= -1).length > 0 && (
@@ -1232,9 +1241,23 @@ export default function GroupDashboard() {
                   
                   {/* 3. Personal Repayments / Redesigned Settle list for long text */}
                   <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4 space-y-3">
-                    <h3 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-                      Nợ cá nhân chéo
-                    </h3>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                        {isFundMode && useFundToOffset && remainingFund > 0 ? 'Đề xuất thanh toán tổng hợp' : 'Nợ cá nhân chéo'}
+                      </h3>
+                      {isFundMode && remainingFund > 0 && (
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">Dùng quỹ cấn nợ</span>
+                          <button 
+                            type="button"
+                            onClick={() => setUseFundToOffset(!useFundToOffset)}
+                            className={`w-7 h-4 flex items-center rounded-full transition-colors px-0.5 flex-shrink-0 ${useFundToOffset ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}`}
+                          >
+                            <div className={`w-3 h-3 bg-white rounded-full shadow-sm transition-transform ${useFundToOffset ? 'translate-x-3' : 'translate-x-0'}`} />
+                          </button>
+                        </label>
+                      )}
+                    </div>
 
                     {simplifiedDebts.length === 0 ? (
                       <p className="text-xs text-slate-400 dark:text-slate-500 py-2 text-center">
@@ -1250,9 +1273,9 @@ export default function GroupDashboard() {
                             <div className="flex-1 min-w-0">
                               {/* Payer & Receiver wrap nicely */}
                               <div className="text-[11px] text-slate-600 dark:text-slate-400 dark:text-slate-500 flex items-center gap-1 flex-wrap font-semibold">
-                                <span className="font-bold text-slate-800 dark:text-slate-200 break-all">{debt.from}</span>
+                                <span className="font-bold text-slate-800 dark:text-slate-200 break-all">{debt.from === 'FUND' ? '💰 Quỹ Chung' : debt.from}</span>
                                 <ArrowRight size={11} className="text-slate-400 dark:text-slate-500 flex-shrink-0" />
-                                <span className="font-bold text-slate-800 dark:text-slate-200 break-all">{debt.to}</span>
+                                <span className="font-bold text-slate-800 dark:text-slate-200 break-all">{debt.to === 'FUND' ? '💰 Quỹ Chung' : debt.to}</span>
                               </div>
                               {/* Amount display */}
                               <div className="font-extrabold text-slate-900 dark:text-slate-50 text-sm mt-1">
